@@ -8,6 +8,8 @@ from app import blueprint
 from app.main import create_app, db
 from app.main.model import user, blacklist
 
+from flask_jwt_extended import JWTManager
+
 app = create_app(os.getenv('BOILERPLATE_ENV') or 'dev')
 app.register_blueprint(blueprint)
 
@@ -19,6 +21,17 @@ migrate = Migrate(app, db)
 
 manager.add_command('db', MigrateCommand)
 
+app.config['JWT_SECRET_KEY'] = 'jwt-secret-string'
+jwt = JWTManager(app)
+
+app.config['JWT_BLACKLIST_ENABLED'] = True
+app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
+
+@jwt.token_in_blacklist_loader
+def check_if_token_in_blacklist(decrypted_token):
+    jti = decrypted_token['jti']
+    return blacklist.RevokedTokenModel.is_jti_blacklisted(jti)
+    
 
 @manager.command
 def run():

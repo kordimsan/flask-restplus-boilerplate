@@ -4,6 +4,7 @@ from flask_restplus import Resource
 from app.main.util.decorator import admin_token_required
 from ..util.dto import UserDto
 from ..service.user_service import save_new_user, get_all_users, get_a_user
+from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required, get_jwt_identity, get_raw_jwt)
 
 api = UserDto.api
 _user = UserDto.user
@@ -11,12 +12,13 @@ _user = UserDto.user
 
 @api.route('/')
 class UserList(Resource):
-    @api.doc('list_of_registered_users')
-    @admin_token_required
+    @api.doc(security='apikey')
+    @jwt_required
     @api.marshal_list_with(_user, envelope='data')
     def get(self):
         """List all registered users"""
         return get_all_users()
+
 
     @api.expect(_user, validate=True)
     @api.response(201, 'User successfully created.')
@@ -31,7 +33,8 @@ class UserList(Resource):
 @api.param('public_id', 'The User identifier')
 @api.response(404, 'User not found.')
 class User(Resource):
-    @api.doc('get a user')
+    @api.doc(security='apikey')
+    @jwt_required
     @api.marshal_with(_user)
     def get(self, public_id):
         """get a user given its identifier"""

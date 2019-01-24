@@ -1,6 +1,6 @@
 from app.main.model.user import User
 from ..service.blacklist_service import save_token
-
+from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required, get_jwt_identity, get_raw_jwt)
 
 class Auth:
 
@@ -10,12 +10,13 @@ class Auth:
             # fetch the user data
             user = User.query.filter_by(email=data.get('email')).first()
             if user and user.check_password(data.get('password')):
-                auth_token = User.encode_auth_token(user.id)
+                #auth_token = User.encode_auth_token(user.id)
+                auth_token = create_access_token(identity = user.id)
                 if auth_token:
                     response_object = {
                         'status': 'success',
                         'message': 'Successfully logged in.',
-                        'Authorization': auth_token.decode()
+                        'Authorization': auth_token
                     }
                     return response_object, 200
             else:
@@ -35,6 +36,7 @@ class Auth:
 
     @staticmethod
     def logout_user(data):
+        print(data) 
         if data:
             auth_token = data.split(" ")[1]
         else:

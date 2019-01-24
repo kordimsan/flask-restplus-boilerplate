@@ -3,7 +3,8 @@ from .. import db, flask_bcrypt
 import datetime
 from app.main.model.blacklist import BlacklistToken
 from ..config import key
-import jwt
+#import jwt
+
 
 
 class User(db.Model):
@@ -16,6 +17,12 @@ class User(db.Model):
     admin = db.Column(db.Boolean, nullable=False, default=False)
     public_id = db.Column(db.String(100), unique=True)
     username = db.Column(db.String(50), unique=True)
+    first_name = db.Column(db.String(50))
+    last_name = db.Column(db.String(50))
+    phone_number = db.Column(db.String(50))
+    latitude = db.Column(db.String(50))
+    longitude = db.Column(db.String(50))
+    area = db.Column(db.Integer, default=30)
     password_hash = db.Column(db.String(100))
 
     @property
@@ -29,25 +36,25 @@ class User(db.Model):
     def check_password(self, password):
         return flask_bcrypt.check_password_hash(self.password_hash, password)
 
-    @staticmethod
-    def encode_auth_token(user_id):
-        """
-        Generates the Auth Token
-        :return: string
-        """
-        try:
-            payload = {
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1, seconds=5),
-                'iat': datetime.datetime.utcnow(),
-                'sub': user_id
-            }
-            return jwt.encode(
-                payload,
-                key,
-                algorithm='HS256'
-            )
-        except Exception as e:
-            return e
+    # @staticmethod
+    # def encode_auth_token(user_id):
+    #     """
+    #     Generates the Auth Token
+    #     :return: string
+    #     """
+    #     try:
+    #         payload = {
+    #             'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1, seconds=5),
+    #             'iat': datetime.datetime.utcnow(),
+    #             'sub': user_id
+    #         }
+    #         return jwt.encode(
+    #             payload,
+    #             key,
+    #             algorithm='HS256'
+    #         )
+    #     except Exception as e:
+    #         return e
 
     @staticmethod
     def decode_auth_token(auth_token):
