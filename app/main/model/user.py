@@ -1,22 +1,23 @@
-
 from .. import db, flask_bcrypt
 from passlib.hash import pbkdf2_sha256 as sha256
 import datetime
 from app.main.model.blacklist import BlacklistToken
 from ..config import key
-#import jwt
+
+
+# import jwt
 
 class User(db.Model):
     """ User Model for storing user related details """
-    __tablename__ = "t_users"
+    __tablename__ = 't_users'
 
     user_id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(120), unique = True, nullable = False)
-    password = db.Column(db.String(120), nullable = False)
-    
+    username = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(120), nullable=False)
+
     email = db.Column(db.String(255), unique=True)
-    registered_on = db.Column(db.DateTime,default=datetime.datetime.utcnow())
-    admin = db.Column(db.Boolean, nullable=False,default=False)
+    registered_on = db.Column(db.DateTime, default=datetime.datetime.utcnow())
+    admin = db.Column(db.Boolean, nullable=False, default=False)
     first_name = db.Column(db.String(100))
     last_name = db.Column(db.String(100))
     phone_number = db.Column(db.String(50))
@@ -31,7 +32,7 @@ class User(db.Model):
     @staticmethod
     def generate_hash(password):
         return sha256.hash(password)
-    
+
     @staticmethod
     def verify_hash(password, hash):
         return sha256.verify(password, hash)

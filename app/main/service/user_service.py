@@ -3,7 +3,9 @@ import datetime
 from passlib.hash import pbkdf2_sha256 as sha256
 from app.main import db
 from app.main.model.user import User
-from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required, get_jwt_identity, get_raw_jwt)
+from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required,
+                                get_jwt_identity, get_raw_jwt)
+
 
 def save_new_user(data):
     user = User.query.filter_by(username=data['username']).first()
@@ -14,11 +16,11 @@ def save_new_user(data):
             password=User.generate_hash(data['password'])
         )
         new_user.save_to_db()
-        access_token = create_access_token(identity = data['username'])
+        access_token = create_access_token(identity=data['username'])
 
         return {
             'message': 'User {} was created'.format(data['username']),
-            'access_token': 'Bearer '+access_token,
+            'access_token': 'Bearer ' + access_token,
         }
     else:
         response_object = {
@@ -27,9 +29,11 @@ def save_new_user(data):
         }
         return response_object, 409
 
+
 def save_changes(data):
     db.session.add(data)
     db.session.commit()
+
 
 def get_all_users():
     return User.query.all()
@@ -37,7 +41,6 @@ def get_all_users():
 
 def get_a_user(username):
     return User.query.filter_by(username=username).first()
-
 
 # def generate_token(user):
 #     try:
@@ -55,7 +58,3 @@ def get_a_user(username):
 #             'message': 'Some error occurred. Please try again.'
 #         }
 #         return response_object, 401
-
-
-
-

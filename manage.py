@@ -27,15 +27,16 @@ jwt = JWTManager(app)
 app.config['JWT_BLACKLIST_ENABLED'] = True
 app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
 
+
 @jwt.token_in_blacklist_loader
 def check_if_token_in_blacklist(decrypted_token):
     jti = decrypted_token['jti']
     return blacklist.RevokedTokenModel.is_jti_blacklisted(jti)
-    
+
 
 @manager.command
 def run():
-    app.run('0.0.0.0',5000)
+    app.run('0.0.0.0', 5000)
 
 
 @manager.command
@@ -46,6 +47,7 @@ def test():
     if result.wasSuccessful():
         return 0
     return 1
+
 
 if __name__ == '__main__':
     manager.run()

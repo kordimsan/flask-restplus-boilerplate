@@ -1,26 +1,25 @@
 from app.main.model.user import User
 from ..service.blacklist_service import save_token
-from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required, get_jwt_identity, get_raw_jwt)
+from flask_jwt_extended import create_access_token
 
 class Auth:
 
     @staticmethod
     def login_user(data):
         username = data.get('username')
-        current_user = User.query.filter_by(username = username).first()
+        current_user = User.query.filter_by(username=username).first()
         if not current_user:
             return {
-                'status': 'success',
-                'message': 'User {} doesn\'t exist'.format(data['username'])
-            }, 401
-        
+                       'status': 'success',
+                       'message': 'User {} doesn\'t exist'.format(data['username'])
+                   }, 401
 
         if User.verify_hash(data['password'], current_user.password):
-            access_token = create_access_token(identity = data['username'])
+            access_token = create_access_token(identity=data['username'])
             return {
-                'message': 'Logged in as {}'.format(current_user.username),
-                'access_token': 'Bearer '+access_token,
-            }, 200
+                       'message': 'Logged in as {}'.format(current_user.username),
+                       'access_token': 'Bearer ' + access_token,
+                   }, 200
         else:
             response_object = {
                 'status': 'fail',
@@ -58,7 +57,7 @@ class Auth:
 
     @staticmethod
     def logout_user(data):
-        print(data) 
+        print(data)
         if data:
             auth_token = data.split(" ")[1]
         else:

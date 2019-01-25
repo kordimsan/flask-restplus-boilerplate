@@ -5,12 +5,13 @@ from app.main.util.decorator import admin_token_required
 
 from ..util.dto import UserDto
 from ..service.user_service import save_new_user, get_all_users, get_a_user
-from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required, get_jwt_identity, get_raw_jwt)
+from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required,
+                                get_jwt_identity, get_raw_jwt)
 
 api = UserDto.api
 _user = UserDto.user
 
- 
+
 @api.route('/')
 class UserList(Resource):
     @api.doc(security='apikey')
@@ -19,7 +20,6 @@ class UserList(Resource):
     def get(self):
         """List all registered users"""
         return get_all_users()
-
 
     @api.expect(_user, validate=True)
     @api.response(201, 'User successfully created.')
@@ -44,6 +44,3 @@ class User(Resource):
             api.abort(404)
         else:
             return user
-
-
-

@@ -7,10 +7,10 @@ from .main.controller.auth_controller import api as auth_ns
 blueprint = Blueprint('api', __name__)
 
 authorizations = {
-    'apikey' : {
-        'type' : 'apiKey',
-        'in' : 'header',
-        'name' : 'Authorization'
+    'apikey': {
+        'type': 'apiKey',
+        'in': 'header',
+        'name': 'Authorization'
     }
 }
 
