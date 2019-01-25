@@ -35,7 +35,7 @@ def check_if_token_in_blacklist(decrypted_token):
 
 @manager.command
 def run():
-    app.run()
+    app.run('0.0.0.0',5000)
 
 
 @manager.command
