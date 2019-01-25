@@ -6,33 +6,55 @@ class Auth:
 
     @staticmethod
     def login_user(data):
-        try:
-            # fetch the user data
-            user = User.query.filter_by(email=data.get('email')).first()
-            if user and user.check_password(data.get('password')):
-                #auth_token = User.encode_auth_token(user.id)
-                auth_token = create_access_token(identity = user.id)
-                if auth_token:
-                    response_object = {
-                        'status': 'success',
-                        'message': 'Successfully logged in.',
-                        'Authorization': auth_token
-                    }
-                    return response_object, 200
-            else:
-                response_object = {
-                    'status': 'fail',
-                    'message': 'email or password does not match.'
-                }
-                return response_object, 401
+        username = data.get('username')
+        current_user = User.query.filter_by(username = username).first()
+        if not current_user:
+            return {
+                'status': 'success',
+                'message': 'User {} doesn\'t exist'.format(data['username'])
+            }, 401
+        
 
-        except Exception as e:
-            print(e)
+        if User.verify_hash(data['password'], current_user.password):
+            access_token = create_access_token(identity = data['username'])
+            return {
+                'message': 'Logged in as {}'.format(current_user.username),
+                'access_token': 'Bearer '+access_token,
+            }, 200
+        else:
             response_object = {
                 'status': 'fail',
-                'message': 'Try again'
+                'message': 'email or password does not match.'
             }
-            return response_object, 500
+            return response_object, 401
+        # try:
+        #     # fetch the user data
+        #     user = User.query.filter_by(email=data.get('email')).first()
+        #     if user and user.check_password(data.get('password')):
+        #         #auth_token = User.encode_auth_token(user.id)
+        #         auth_token = create_access_token(identity = user.id)
+        #         if auth_token:
+        #             response_object = {
+        #                 'status': 'success',
+        #                 'message': 'Successfully logged in.',
+        #                 'Authorization': auth_token
+        #             }
+        #             return response_object, 200
+        #     else:
+        #         response_object = {
+        #             'status': 'fail',
+        #             'message': 'email or password does not match.'
+        #         }
+        #         return response_object, 401
+
+        # except Exception as e:
+        #     print(e)
+        #     response_object = {
+        #         'status': 'fail',
+        #         'message': 'Try again',
+        #         'exception': e.message
+        #     }
+        #     return response_object, 500
 
     @staticmethod
     def logout_user(data):

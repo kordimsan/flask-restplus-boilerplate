@@ -1,5 +1,5 @@
 from flask import request
-from flask_restplus import Resource
+from flask_restplus import Resource,reqparse,fields
 
 from app.main.service.auth_helper import Auth
 from app.main.model import blacklist
@@ -10,6 +10,9 @@ from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_r
 api = AuthDto.api
 user_auth = AuthDto.user_auth
 
+parser = reqparse.RequestParser()
+parser.add_argument('username', help = 'This field cannot be blank', required = True)
+parser.add_argument('password', help = 'This field cannot be blank', required = True)
 
 @api.route('/login')
 class UserLogin(Resource):
@@ -19,9 +22,8 @@ class UserLogin(Resource):
     @api.doc('user login')
     @api.expect(user_auth, validate=True)
     def post(self):
-        # get the post data
-        post_data = request.json
-        return Auth.login_user(data=post_data)
+        data = parser.parse_args()
+        return Auth.login_user(data=data)
 
 
 @api.route('/logout')
