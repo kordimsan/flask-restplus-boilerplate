@@ -16,7 +16,6 @@ Jinja2
 jsonschema
 Mako
 MarkupSafe
-pkg-resources
 pycparser
 PyJWT
 python-dateutil
