@@ -2,6 +2,7 @@ from app.main.model.user import User
 from ..service.blacklist_service import save_token
 from flask_jwt_extended import create_access_token
 
+
 class Auth:
 
     @staticmethod

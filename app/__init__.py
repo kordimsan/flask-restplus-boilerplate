@@ -15,7 +15,7 @@ authorizations = {
 }
 
 api = Api(blueprint,
-          title='FLASK RESTPLUS API BOILER-PLATE WITH JWT',
+          title='FLASK RESTPLUS API WITH JWT',
           version='1.0',
           description='a boilerplate for flask restplus web service',
           authorizations=authorizations

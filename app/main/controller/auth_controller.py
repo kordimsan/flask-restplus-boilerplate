@@ -1,11 +1,9 @@
+from flask_jwt_extended import (jwt_required, get_raw_jwt)
 from flask_restplus import Resource, reqparse
 
-from app.main.service.auth_helper import Auth
 from app.main.model import blacklist
+from app.main.service.auth_helper import Auth
 from ..util.dto import AuthDto
-
-from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required,
-                                get_jwt_identity, get_raw_jwt)
 
 api = AuthDto.api
 user_auth = AuthDto.user_auth
